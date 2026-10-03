@@ -20,7 +20,8 @@ try {
 } catch (e) {}
 
 // Motorn läggs i en egen funktion så att dess hjälpfunktioner inte krockar med spelets globala namn.
-const fill = (html, fonts, sw) => html
+const fill = (html, head, fonts, sw) => html
+  .replace('__HEAD__', () => head)
   .replace('__FONTS__', () => fonts)
   .replace('__SW__', () => sw)
   .replace('__ENGINE__', () => ';(function () {\n' + engine + '\n})();')
@@ -35,7 +36,7 @@ const gfonts = [
   '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>',
   '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">',
 ].join('\n');
-const artifact = fill(tpl, gfonts, '');
+const artifact = fill(tpl, '', gfonts, '');
 fs.writeFileSync(path.join(root, 'dist', 'tango.html'), artifact);
 console.log(`dist/tango.html byggd med ${levels.length} banor, ${(artifact.length / 1024).toFixed(0)} kB`);
 
@@ -51,12 +52,7 @@ const localFonts = `<link rel="preload" href="fonts/bricolage-grotesque-latin.wo
 html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
 [hidden] { display: none !important; }
 </style>`;
-const siteHead = `<!doctype html>
-<html lang="sv">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Tango-pussel för mobil och webbläsare. Lika många solar och månar i varje rad och kolumn, aldrig tre lika i rad.">
+const siteHead = `<meta name="description" content="Tango-pussel för mobil och webbläsare. Lika många solar och månar i varje rad och kolumn, aldrig tre lika i rad.">
 <meta name="theme-color" content="#121414">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="sv_SE">
@@ -75,13 +71,12 @@ const siteHead = `<!doctype html>
 <meta name="apple-mobile-web-app-title" content="Tango">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-`;
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">`;
 const swRegister = `// Offline-stöd. Service workers kräver http(s), så när filen öppnas direkt från disk hoppas det över.
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
   addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
 }`;
-const index = siteHead + fill(tpl, localFonts, swRegister);
+const index = fill(tpl, siteHead, localFonts, swRegister);
 fs.writeFileSync(path.join(root, 'index.html'), index);
 console.log(`index.html byggd, version ${appVersion}` + (site ? `, adress ${site}` : ', utan SITE_URL'));
 

@@ -1,4 +1,10 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tango</title>
+__HEAD__
 __FONTS__
 <style>
 /* Layout: ett skärmsspel i en kolumn, samma som Queens. Rubrikrad, bräde i fyrkant, statusrad, verktygsfält.
@@ -166,6 +172,8 @@ h1, .clock { flex: 1 1 0; min-width: 0; }
   .start .ver { grid-column: 1 / -1; grid-row: 4; margin: 0; padding-top: 0; text-align: center; }
 }
 </style>
+</head>
+<body>
 
 <div class="start" id="start" role="dialog" aria-label="Tango startskärm">
   <svg viewBox="108 108 296 296" aria-hidden="true">
@@ -552,3 +560,5 @@ function closeStart(then) {
 })();
 __SW__
 </script>
+</body>
+</html>

@@ -36,7 +36,7 @@ Manifestet har avsiktligt inget `id`. Ett `id` tolkas mot sajtens origin, inte m
 | `manifest.webmanifest` | PWA-manifest: namn, färger, ikoner |
 | `icons/` | `icon.svg` (appikon) och `og.svg` (delningsbild 1200 x 630); PNG-filerna renderas från dem vid bygget och checkas inte in |
 | `fonts/` | Bricolage Grotesque och IBM Plex Mono, latin-delmängd (SIL Open Font License) |
-| `src/app.template.html` | Spelets gränssnitt och logik, med platshållarna `__ENGINE__`, `__LEVELS__`, `__FONTS__` och `__SW__` |
+| `src/app.template.html` | Spelets gränssnitt och logik, ett komplett HTML-dokument med platshållarna `__HEAD__` (sajtens PWA- och delningstaggar), `__FONTS__`, `__ENGINE__`, `__LEVELS__` och `__SW__` |
 | `src/sw.template.js` | Mall för `sw.js` |
 | `src/tango.js` | Generator, unikhetskontroll och logiklösare med förklaringar (används också av Tips i spelet) |
 | `levels.json` | Banorna |
