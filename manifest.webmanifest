@@ -3,7 +3,6 @@
   "short_name": "Tango",
   "description": "Tango-pussel med sol och måne för mobil och webbläsare. Lika många av varje, aldrig tre i rad.",
   "lang": "sv",
-  "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

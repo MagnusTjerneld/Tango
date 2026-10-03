@@ -17,6 +17,8 @@ Spelet är en PWA. Publicerat över https (t.ex. GitHub Pages) kan det installer
 
 En service worker förcachar sidan, ikonerna och typsnitten vid första besöket. När en ny version publiceras hämtas den i bakgrunden och används från nästa start. Service workers kräver http(s), så öppnad direkt från disk (`file://`) fungerar sidan som vanligt men utan offline-stöd och installation. Lokalt: `npx http-server .`
 
+Manifestet har avsiktligt inget `id`. Ett `id` tolkas mot sajtens origin, inte mot manifestets mapp, så `"id": "./"` blir `https://<ägare>.github.io/` och krockar med andra appar på samma origin (t.ex. Queens): Chrome säger då att appen redan är installerad. Utan `id` används `start_url`, som pekar på `…/Tango/`.
+
 - Tryck på en ruta för att växla mellan sol, måne och tom. Rutor som är ifyllda från start är låsta.
 - Felmarkeringen visas först när brädet legat stilla en sekund, eftersom man ofta passerar en ruta som tillfälligt bryter mot en regel på vägen från sol till måne.
 - Tips pekar ut nästa logiska steg. Den markerade rutan får vit ram, rutorna som är skälet får ränder, och en kort text förklarar varför. Alla banor går att lösa med Tips utan att behöva prova antaganden över flera rader.
