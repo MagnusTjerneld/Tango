@@ -1,64 +1,20 @@
-# Bygger och publicerar spelet på GitHub Pages vid varje push till main.
-# Byggda filer (index.html, sw.js, PNG-ikoner) checkas inte in utan skapas här från källan.
+# Publishes the redirect to Puzzles on every push to main. Nothing is built: the site is the files in the repository root.
 name: Pages
 
 on:
   push:
     branches: [main]
-  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: pages-${{ github.ref }}
+  group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    # Ett normalt bygge tar under en minut. Hänger apt eller nedladdningen faller jobbet efter 15 min i stället för 6 h.
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      # Ingen webbläsare laddas ner: scripts/browser.js använder Chrome som redan finns på runnern.
-      - name: Installera playwright
-        run: npm install --no-save --no-package-lock playwright@1.56.1
-
-      - name: Kontrollera banorna
-        run: python3 scripts/verify-levels.py
-
-      # SITE_URL behövs för delningsbilden (og:image måste vara en fullständig adress).
-      # Standard är GitHub Pages-adressen; sätt repo-variabeln SITE_URL vid egen domän.
-      - name: Bygg ikoner, sida och service worker
-        env:
-          SITE_URL: ${{ vars.SITE_URL || format('https://{0}.github.io/{1}/', github.repository_owner, github.event.repository.name) }}
-        run: |
-          node scripts/build-icons.js
-          node scripts/build-page.js
-
-      - name: Testa tipsen på alla banor
-        run: node test/hints.test.js
-
-      - name: Samla sajtens filer
-        run: |
-          mkdir _site
-          cp -r index.html sw.js manifest.webmanifest icons fonts _site/
-          touch _site/.nojekyll
-
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
-
   deploy:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-    needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -68,5 +24,13 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v4
+      - name: Collect the site
+        run: |
+          mkdir _site
+          cp index.html 404.html sw.js .nojekyll _site/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
       - id: deployment
         uses: actions/deploy-pages@v4

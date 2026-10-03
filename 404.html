@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tango has moved to Puzzles</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#121414">
+<link rel="canonical" href="https://magnustjerneld.github.io/Puzzles/#tango">
+<!-- Fallback without JavaScript. With it, the script below goes first, after clearing the old app's offline copy. -->
+<meta http-equiv="refresh" content="2; url=/Puzzles/#tango">
+<style>
+  html { background: #121414; color: #e9ebe6; font: 16px/1.5 system-ui, sans-serif; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; box-sizing: border-box; text-align: center; }
+  a { color: #e3b341; }
+</style>
+</head>
+<body>
+<p>Tango now lives in <a href="/Puzzles/#tango">Puzzles</a>, together with the other puzzles. Your progress comes along.</p>
+<script>
+// Tango moved into Puzzles (https://github.com/MagnusTjerneld/Puzzles). This page only sends visitors on.
+// Before it does, it removes the old app's service worker and caches, so the old game is not served from them again.
+// Only this app's own: Puzzles lives on the same origin and must keep its worker and cache.
+(function () {
+  var go = function () { location.replace('/Puzzles/#tango'); };
+  var clean = Promise.all([
+    'serviceWorker' in navigator ? navigator.serviceWorker.getRegistrations().then(function (rs) {
+      return Promise.all(rs.filter(function (r) { return /\/Tango\/$/.test(r.scope); }).map(function (r) { return r.unregister(); }));
+    }) : null,
+    'caches' in window ? caches.keys().then(function (ks) {
+      return Promise.all(ks.filter(function (k) { return /^tango-/.test(k); }).map(function (k) { return caches.delete(k); }));
+    }) : null,
+  ]);
+  // Never wait long: a stuck cleanup must not keep anyone from the game.
+  Promise.race([clean, new Promise(function (r) { setTimeout(r, 1500); })]).then(go, go);
+})();
+</script>
+</body>
+</html>
